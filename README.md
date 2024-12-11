@@ -32,6 +32,8 @@ If you want to stop the Docker container, you can run:
 docker stop <container_id>
 
 5. Troubleshooting
+   
 If the page does not load, ensure Docker is running and that there are no conflicts with port 8080.
+
 If you have issues with building the Docker image, make sure you’re in the correct directory where the Dockerfile is located.
 
