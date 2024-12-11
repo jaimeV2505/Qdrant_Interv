@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qdrant FAQ - Code Snippets</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e26, #1f2a3d); /* Gradient background */
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            background-color: #161e33;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+        header img {
+            max-height: 50px;
+            margin: 0;
+        }
+        .faq-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 80%;
+            max-width: 1000px;
+            margin-top: 40px;
+        }
+        .faq {
+            background-color: #222d46;
+            border-radius: 10px;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .faq:hover {
+            transform: translateY(-10px); /* Hover effect */
+        }
+        .faq-item {
+            margin-bottom: 30px;
+        }
+        .faq-item h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #3b82f6;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .faq-item h3:hover {
+            color: #1e40af;
+        }
+        .answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .answer.visible {
+            max-height: 500px;
+        }
+        .answer p {
+            margin: 15px 0;
+        }
+        pre {
+            background-color: #1c2539;
+            padding: 15px;
+            color: #e5e7eb;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* Icon and accordion transitions */
+        .faq-item h3::before {
+            content: "+";
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: #3b82f6;
+            transition: transform 0.3s ease;
+        }
+        .faq-item h3.open::before {
+            transform: rotate(45deg); /* Change icon on open */
+        }
+
+        /* Titles for the boxes */
+        .box-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="https://cloud.qdrant.io/images/logo_with_text.svg" alt="Qdrant Logo"> <!-- Fixed Qdrant logo -->
+    <h1>Qdrant FAQ - Code Snippets</h1>
+</header>
+
+<div class="faq-container">
+    <!-- FAQ Box 1 -->
+    <div class="faq">
+        <div class="box-title">Qdrant FAQ</div>
+        <!-- FAQ Item 1 -->
+        <div class="faq-item">
+            <h3 onclick="toggleAnswer(this)">How can I retrieve a single point from a collection by its ID?</h3>
+            <div class="answer">
+                <p>
+                    To retrieve a single point from a collection by its ID, you can use the <strong>"Retrieve Points"</strong> endpoint provided by Qdrant. This allows you to fetch specific points using their unique IDs. Here's how you can do it:
+                </p>
+                <p>
+                    <strong>REST API (Retrieve Multiple Points):</strong>
+                    <pre>
+POST /collections/{collection_name}/points
+{
+    "ids": [0, 3, 100]
+}
+                    </pre>
+                    This method allows additional parameters, such as <code>with_vectors</code> and <code>with_payload</code>, to customize the parts of the point you want in the response.
+                </p>
+                <p>
+                    <strong>REST API (Retrieve a Single Point):</strong>
+                    <pre>
+GET /collections/{collection_name}/points/{point_id}
+                    </pre>
+                </p>
+                <p>
+                    For more details, refer to the <a href="https://qdrant.tech/documentation/concepts/points/#retrieve-points" target="_blank">official documentation</a>.
+                </p>
+            </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-item">
+            <h3 onclick="toggleAnswer(this)">Why is collection 1 slower than collection 2, and when should I use payload or HNSW indexes?</h3>
+            <div class="answer">
+                <p>
+                    In your test with 2 identical collections (300 points, 1024-dimensional vector), the difference in speed is because:
+                </p>
+                <p>
+                    <ul>
+                        <li>300 points are too few for the index to be fully utilized or impactful.</li>
+                        <li>Indexes like payload or HNSW are designed to optimize searches in datasets with hundreds of thousands to millions of vectors.</li>
+                    </ul>
+                </p>
+                <p>
+                    Therefore, before working with hundreds of thousands of vectors, there's no significant advantage in using HNSW or payload indexes.
+                </p>
+                <p>
+                    For further optimizations and best practices, consult the <a href="https://qdrant.tech/documentation/concepts/indexing/" target="_blank">official documentation on indexing</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Box 2 (new section) -->
+    <div class="faq">
+        <div class="box-title">Code Snippets</div>
+        <!-- FAQ Item 3 -->
+        <div class="faq-item">
+            <h3 onclick="toggleAnswer(this)">Error when adding vectors with the wrong size</h3>
+            <div class="answer">
+                <p>
+                    A common issue when working with Qdrant is adding vectors with the incorrect size for the collection. Ensure that the vectors you're adding match the dimension expected by the collection. This can cause errors or unexpected behavior in your search results.
+                </p>
+                <p>
+                    Double-check the dimensionality of your vectors and the configuration of your collection to ensure compatibility.
+                </p>
+                <p>
+                    For more details on vector dimensions, check the <a href="https://qdrant.tech/documentation/concepts/vectors/" target="_blank">official documentation on vector dimensions</a>.
+                </p>
+                <p><strong>Code snippet:</strong></p>
+                <pre>
+import qdrant_client
+
+client = qdrant_client.QdrantClient("localhost", port=6333)
+
+# Assuming the collection was created with a 128-dimensional vector
+vector = [0.1] * 128  # Correct dimension
+
+try:
+    client.upsert(
+        collection_name="my_collection",
+        points=[
+            qdrant_client.PointStruct(id=1, vector=vector)
+        ]
+    )
+    print("Point added successfully")
+except Exception as e:
+    print(f"Error adding point: {e}")
+                </pre>
+            </div>
+        </div>
+
+<script>
+    function toggleAnswer(questionElement) {
+        const answer = questionElement.nextElementSibling;
+        questionElement.classList.toggle('open'); // Toggle icon change
+        answer.classList.toggle('visible'); // Toggle answer visibility
+    }
+</script>
+
+</body>
+</html>
