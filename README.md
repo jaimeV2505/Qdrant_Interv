@@ -13,13 +13,11 @@ Setup Instructions
 To build the Docker image, run the following command in the root directory where your Dockerfile and faq.html are located:
 
 docker build --no-cache -t my-nginx-faq .
-This command creates a Docker image with the name my-nginx-faq using the current directory context (.).
 
 2. Run the Docker Container
 After building the Docker image, run the following command to start the container:
 
 docker run -d -p 8080:80 my-nginx-faq
-This command runs the Docker container in detached mode (-d) and maps port 80 inside the container (the default port used by Nginx) to port 8080 on your local machine.
 
 3. Access the FAQ Page
 Once the container is running, open your web browser and navigate to:
